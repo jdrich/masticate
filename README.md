@@ -2,42 +2,35 @@ Masticate <https://jdrich@github.com/jdrich/masticate.git>
 
 ## About
 
-Masticate is an MIT licensed PHP input filtering library that wraps the dangerous PHP superglobals ($_SERVER, $_GET, $_POST, $_FILES) to enforce some level of data sanitation.
+Masticate is an MIT licensed PHP input filtering library that wraps the
+dangerous PHP superglobals ($_SERVER, $_GET, $_POST, $_FILES) to enforce some
+level of data sanitation.
 
 ## Uses
 
-Polling
+Masticate (destroys superglobals)
 
-    // The URL we want to poll
-    var polled_location = 'poll_location.php';
+    $filter = Filter::masticate();
 
-    // The JSONP callback
-    var poll_callback = function (data) {
-        console.log(data);
+Register (preserves superglobals)
+
+    $filter = new Filter(['get' => $_GET]); $filter->register(['post' =>
+    $_POST]);
+
+Retreiving
+
+    if($filter->has('get','param')) {
+        $foo = $filter->get('param');
     }
 
-    // How often to poll the resource
-    var interval = 500;
+Filtering
 
-    Vixen.init(polled_location, poll_callback, interval);
-
-Clearing
-
-    Vixen.destroy(polled_location);
-
-Signalling
-
-    // The URL we want to signal
-    var signalled_location = 'signal_location.php';
-
-    // The message we want to send
-    var message = JSON.stringify('example');
-
-    Vixen.signal(signalled_location, message);
+    $bar = $filter->get('param', 'SANITIZE_EMAIL');
 
 ## Purpose
 
-The goal of Masticate is to be a small library
+Masticate wraps the superglobals in a very simple layer of OO which implements
+the build-in PHP filter extension.
 
 ## Author
 
